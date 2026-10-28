@@ -34,9 +34,9 @@ cp .env.example .env
 
 | Variabel | Deskripsi | Nilai Default Lokal |
 |---|---|---|
-| `VITE_KEYCLOAK_AUTHORITY` | URL Realm Keycloak Issuer | `http://localhost:8080/realms/astra` |
+| `VITE_KEYCLOAK_AUTHORITY` | URL Realm Keycloak Issuer | `http://localhost:8080/realms/wefgis` |
 | `VITE_KEYCLOAK_CLIENT_ID` | Client ID Keycloak Portal | `portal` |
-| `VITE_KEYCLOAK_ACCOUNT_URL` | URL Konsol Profil Akun Keycloak | `http://localhost:8080/realms/astra/account` |
+| `VITE_KEYCLOAK_ACCOUNT_URL` | URL Konsol Profil Akun Keycloak | `http://localhost:8080/realms/wefgis/account` |
 | `VITE_LANDING_URL` | URL Landing Page SSO (Tujuan Post-Logout) | `http://localhost:3000` |
 | `VITE_APP_VOXAGIS_URL` | URL Platform VoxaGIS | `http://localhost:5175` |
 | `VITE_APP_GROVIA_URL` | URL Platform Grovia (Biomass) | `http://localhost:5173` |

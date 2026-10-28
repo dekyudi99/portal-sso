@@ -1,16 +1,19 @@
-import { Loader2, ShieldCheck } from 'lucide-react'
+import React from 'react'
+import { Loader2 } from 'lucide-react'
+import logoImg from '../assets/logo.jpeg'
 
-const LoadingScreen = ({ message = 'Memverifikasi sesi Keycloak...' }) => {
+const LoadingScreen = ({ message = 'Verifying session...' }) => {
   return (
     <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-6 select-none">
-      <div className="relative mb-6">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-blue-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 animate-pulse">
-          <ShieldCheck className="w-9 h-9 text-white" />
+      <div className="flex flex-col items-center space-y-4">
+        <div className="w-14 h-14 rounded-2xl p-0.5 bg-gradient-to-tr from-cyan-500 via-indigo-600 to-emerald-400 shadow-lg">
+          <img src={logoImg} alt="WEFGIS" className="w-full h-full object-cover rounded-[14px]" />
         </div>
-        <Loader2 className="w-6 h-6 text-emerald-400 animate-spin absolute -bottom-2 -right-2 bg-slate-950 rounded-full p-0.5 border border-slate-800" />
+        <div className="flex items-center space-x-2 text-slate-400 text-xs">
+          <Loader2 className="w-4 h-4 text-cyan-400 animate-spin" />
+          <span>{message}</span>
+        </div>
       </div>
-      <h2 className="text-xl font-bold text-slate-100 mb-2">Astra Ecosystem Portal</h2>
-      <p className="text-sm text-slate-400 font-medium animate-pulse">{message}</p>
     </div>
   )
 }

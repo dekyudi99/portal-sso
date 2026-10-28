@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
-body {
+@variant dark (&:where(.dark, .dark *));
+
+html {
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
+
+body {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+

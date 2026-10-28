@@ -1,6 +1,18 @@
 import { setOidcAccessToken, getOidcUserManager } from './oidcTokenService'
 
 let isTerminating = false
+let isLoggingOut = false
+
+/**
+ * Flag untuk menandai proses logout yang sedang berlangsung.
+ * Saat flag ini aktif, handler session termination (dari iframe/tab lain)
+ * diabaikan agar tidak berebut redirect dengan signoutRedirect.
+ */
+export const setIsLoggingOut = (val) => {
+  isLoggingOut = Boolean(val)
+}
+
+export const getIsLoggingOut = () => isLoggingOut
 
 /**
  * Pembersihan sesi lokal terpusat untuk Portal SSO.
@@ -8,7 +20,7 @@ let isTerminating = false
  * Setelah sesi berakhir, arahkan ke landing page SSO (VITE_LANDING_URL).
  */
 export const terminateLocalSession = async (reason = 'Sesi berakhir') => {
-  if (isTerminating) return
+  if (isTerminating || isLoggingOut) return
   isTerminating = true
 
   const landingUrl = import.meta.env.VITE_LANDING_URL || 'http://localhost:3000'

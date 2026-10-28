@@ -4,6 +4,7 @@ import AuthGuard from './AuthGuard'
 import AuthCallbackPage from './AuthCallbackPage'
 import ErrorPage from './ErrorPage'
 import DashboardPage from '../pages/DashboardPage'
+import ProfilePage from '../pages/ProfilePage'
 
 const routes = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const routes = createBrowserRouter([
           {
             path: '/dashboard',
             element: <DashboardPage />,
+          },
+          {
+            path: '/profile',
+            element: <ProfilePage />,
           },
           {
             path: '*',

@@ -21,7 +21,7 @@ const AuthGuard = () => {
   }, [isLoading, isAuthenticated, location, signinRedirect])
 
   if (isLoading || !isAuthenticated) {
-    return <LoadingScreen message="Memeriksa sesi login ke Keycloak..." />
+    return <LoadingScreen message="Checking Keycloak session..." />
   }
 
   return <Outlet />

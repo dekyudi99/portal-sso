@@ -18,6 +18,7 @@ export const useAppRoles = () => {
 
     const filtered = appsConfig.filter((app) => {
       if (isUserAdmin) return true
+      if (!app.requiredRole) return true
       return userRoles.includes(app.requiredRole)
     })
 

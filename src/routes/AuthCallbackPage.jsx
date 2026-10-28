@@ -32,7 +32,7 @@ const AuthCallbackPage = () => {
     }
   }, [urlError, urlErrorDesc, oidcAuth.error, oidcAuth.isAuthenticated, navigate])
 
-  return <LoadingScreen message="Memproses verifikasi token Keycloak..." />
+  return <LoadingScreen message="Verifying Keycloak token..." />
 }
 
 export default AuthCallbackPage

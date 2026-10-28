@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuth as useOidcAuth } from 'react-oidc-context'
 import AuthContext from './AuthContext'
 import { setOidcAccessToken, setOidcUserManager, getOidcAccessToken } from '../services/oidcTokenService'
-import { terminateLocalSession } from '../services/sessionTerminationService'
+import { terminateLocalSession, setIsLoggingOut, getIsLoggingOut } from '../services/sessionTerminationService'
 import { getRealmRoles } from '../utils/tokenUtils'
 
 const AuthProvider = ({ children }) => {
@@ -21,6 +21,8 @@ const AuthProvider = ({ children }) => {
     if (!oidcAuth?.events) return
 
     const handleSessionEnded = async () => {
+      // Abaikan jika user sedang dalam proses logout aktif untuk mencegah perebutan redirect
+      if (getIsLoggingOut()) return
       await terminateLocalSession('Sesi Anda telah berakhir.')
     }
 
@@ -41,6 +43,7 @@ const AuthProvider = ({ children }) => {
     const CHECK_THROTTLE_MS = 15000
 
     const handleVisibilityOrFocus = async () => {
+      if (getIsLoggingOut()) return
       if (typeof document !== 'undefined' && document.visibilityState && document.visibilityState !== 'visible') {
         return
       }
@@ -55,7 +58,9 @@ const AuthProvider = ({ children }) => {
         try {
           await oidcAuth.signinSilent()
         } catch {
-          await terminateLocalSession('Sesi berakhir')
+          if (!getIsLoggingOut()) {
+            await terminateLocalSession('Sesi berakhir')
+          }
         }
       }
     }
@@ -85,15 +90,25 @@ const AuthProvider = ({ children }) => {
     }
   }, [oidcAuth.isAuthenticated, oidcAuth.user])
 
-  // Logout via Keycloak OP signoutRedirect ke landing URL
+  /**
+   * Logout via Keycloak OP signoutRedirect.
+   * PENTING:
+   * 1. Set flag isLoggingOut sebelum memanggil signoutRedirect.
+   * 2. JANGAN hapus token/user sebelum redirect dimulai agar state OIDC dan id_token_hint terjaga.
+   * 3. Catatan Keycloak: post_logout_redirect_uri (VITE_LANDING_URL) WAJIB terdaftar di
+   *    "Valid post logout redirect URIs" pada client 'portal' di Keycloak realm 'astra'.
+   */
   const logout = useCallback(async () => {
     const landingUrl = import.meta.env.VITE_LANDING_URL || 'http://localhost:3000'
+    setIsLoggingOut(true)
+
     try {
-      setOidcAccessToken(null)
       await oidcAuth.signoutRedirect({
         post_logout_redirect_uri: landingUrl,
       })
-    } catch {
+    } catch (err) {
+      console.error('Logout error:', err)
+      // Fallback redirect ke landing URL jika signoutRedirect gagal
       window.location.replace(landingUrl)
     }
   }, [oidcAuth])
@@ -105,6 +120,8 @@ const AuthProvider = ({ children }) => {
       name: oidcAuth.user.profile.name || oidcAuth.user.profile.preferred_username || 'Pengguna',
       username: oidcAuth.user.profile.preferred_username || '',
       email: oidcAuth.user.profile.email || '',
+      firstName: oidcAuth.user.profile.given_name || '',
+      lastName: oidcAuth.user.profile.family_name || '',
       roles,
       isAdmin: roles.includes('admin'),
     }
