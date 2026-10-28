@@ -15,10 +15,3 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
-    networks:
-      - central-db
-
-networks:
-  central-db:
-    name: db-central-net
-    external: true
